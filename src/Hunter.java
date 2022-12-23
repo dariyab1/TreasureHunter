@@ -11,6 +11,7 @@ public class Hunter
     //instance variables
     private String hunterName;
     private String kit;
+    private String treasureCollection;
     private int gold;
 
     //Constructor
@@ -24,6 +25,7 @@ public class Hunter
         this.hunterName = hunterName;
         kit = "";
         gold = startingGold;
+        treasureCollection="";
     }
 
     //Accessors
@@ -129,6 +131,19 @@ public class Hunter
         }
 
         return false;
+    }
+
+    public String getTreasureCollection(){
+        return treasureCollection;
+    }
+
+    public boolean collectTreasure(String type){
+        if(!hasItemInKit(type)){
+            kit+=type+KIT_DELIMITER;
+            return true;
+        }
+        return false;
+
     }
 
     /**

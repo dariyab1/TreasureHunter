@@ -11,6 +11,7 @@ public class Town
     private Terrain terrain;
     private String printMessage;
     private boolean toughTown;
+    private Treasure treasure;
 
 
 
@@ -125,6 +126,23 @@ public class Town
                 printMessage += "That'll teach you to go lookin' fer trouble in MY town! Now pay up!";
                 printMessage += "\nYou lost the brawl and pay " +  goldDiff + " gold.";
                 hunter.changeGold(-1 * goldDiff);
+            }
+        }
+    }
+
+    public void lookForTreasure(){
+        String treasureFound=treasure.getTreasure();
+        printMessage="You searched and searched and found... "+treasureFound;
+        if(treasureFound.equals(treasure.DUST)){
+            printMessage=+="\nACHOO!  That is quite... dusty.  Well, the true treasure is the friends we made along the way.";
+        }
+        else{
+            if(hunter.collectTreasure(treasureFound)){
+                printMessage+="That's new! "+treasureFound+ " has been added to your inventory.";
+                if(treasure.collectionHasAllTreasures(hunter.getTreasureCollection()));
+            }
+            else{
+                printMessage+="You already found this treasure, put it back!";
             }
         }
     }
