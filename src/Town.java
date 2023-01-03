@@ -12,6 +12,7 @@ public class Town
     private String printMessage;
     private boolean toughTown;
     private Treasure treasure;
+    private int win;
 
 
 
@@ -19,8 +20,8 @@ public class Town
     //Constructor
     /**
      * The Town Constructor takes in a shop and the surrounding terrain, but leaves the hunter as null until one arrives.
-     * @param s The town's shoppe.
-     * @param t The surrounding terrain.
+     * @param shop The town's shoppe.
+     * @param toughness The surrounding terrain.
      */
     public Town(Shop shop, double toughness)
     {
@@ -35,6 +36,8 @@ public class Town
 
         // higher toughness = more likely to be a tough town
         toughTown = (Math.random() < toughness);
+        treasure=new Treasure();
+        win=0;
     }
 
     public String getLatestNews()
@@ -44,7 +47,7 @@ public class Town
 
     /**
      * Assigns an object to the Hunter in town.
-     * @param h The arriving Hunter.
+     * @param hunter The arriving Hunter.
      */
     public void hunterArrives(Hunter hunter)
     {
@@ -127,19 +130,25 @@ public class Town
                 printMessage += "\nYou lost the brawl and pay " +  goldDiff + " gold.";
                 hunter.changeGold(-1 * goldDiff);
             }
+            if(hunter.getGold()<=0){
+                win=2;
+            }
+
         }
     }
 
     public void lookForTreasure(){
         String treasureFound=treasure.getTreasure();
-        printMessage="You searched and searched and found... "+treasureFound;
-        if(treasureFound.equals(treasure.DUST)){
-            printMessage=+="\nACHOO!  That is quite... dusty.  Well, the true treasure is the friends we made along the way.";
+        printMessage="You searched and found... "+treasureFound+". ";
+        if(treasureFound.equals("Dust")){
+            printMessage+="\nThis place is quite dusty... doesn't look like you'll find anything here :(";
         }
         else{
             if(hunter.collectTreasure(treasureFound)){
                 printMessage+="That's new! "+treasureFound+ " has been added to your inventory.";
-                if(treasure.collectionHasAllTreasures(hunter.getTreasureCollection()));
+                if(treasure.collectionHasAllTreasures(hunter.getTreasureCollection())){
+                    win=1;
+                }
             }
             else{
                 printMessage+="You already found this treasure, put it back!";
@@ -190,5 +199,9 @@ public class Town
     {
         double rand = Math.random();
         return (rand < 0.5);
+    }
+
+    public int getWin(){
+        return win;
     }
 }

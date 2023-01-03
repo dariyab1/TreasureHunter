@@ -13,6 +13,7 @@ public class TreasureHunter
     private Town currentTown;
     private Hunter hunter;
     private boolean hardMode;
+    private int win;
 
     //Constructor
     /**
@@ -90,6 +91,8 @@ public class TreasureHunter
         currentTown.hunterArrives(hunter);
     }
 
+
+
     /**
      * Displays the menu and receives the choice from the user.<p>
      * The choice is sent to the processChoice() method for parsing.<p>
@@ -100,7 +103,7 @@ public class TreasureHunter
         Scanner scanner = new Scanner(System.in);
         String choice = "";
 
-        while (!(choice.equals("X") || choice.equals("x")))
+        while (!(choice.equals("X") || choice.equals("x") || win==0))
         {
             System.out.println();
             System.out.println(currentTown.getLatestNews());
@@ -144,6 +147,7 @@ public class TreasureHunter
             currentTown.lookForTrouble();
         }
         else if(choice.equals("H")||choice.equals("h")){
+            currentTown.lookForTreasure();
 
         }
         else if (choice.equals("X") || choice.equals("x"))
