@@ -14,6 +14,8 @@ public class TreasureHunter
     private Hunter hunter;
     private boolean hardMode;
     private int win;
+    private boolean easyMode;
+    private boolean cheatMode;
 
     //Constructor
     /**
@@ -25,6 +27,8 @@ public class TreasureHunter
         currentTown = null;
         hunter = null;
         hardMode = false;
+        easyMode=false;
+        cheatMode=false;
     }
 
     // starts the game; this is the only public method
@@ -47,16 +51,42 @@ public class TreasureHunter
         System.out.print("What's your name, Hunter? ");
         String name = scanner.nextLine();
 
-        // set hunter instance variable
-        hunter = new Hunter(name, 10);
 
-        System.out.print("Hard mode? (y/n): ");
-        String hard = scanner.nextLine();
-        if (hard.equals("y") || hard.equals("Y"))
+        System.out.print("Hard mode(1), normal mode(2), or easy mode(3)? : ");
+        int hardness = scanner.nextInt();
+        if(hardness==12345){
+            cheatMode=true;
+        }
+        else if (hardness==1)
         {
             hardMode = true;
         }
+        else if(hardness==3){
+            easyMode=true;
+        }
+
+
+
+
+
+
+        // set hunter instance variable
+
+        if(easyMode){
+            hunter = new Hunter(name, 40);
+        }
+        else if(hardMode){
+            hunter = new Hunter(name, 5);
+        }
+        else if(cheatMode){
+            hunter=new Hunter(name, 50);
+        }
+        else{hunter = new Hunter(name, 10);}
+
+
     }
+
+
 
     /**
      * Creates a new town and adds the Hunter to it.
@@ -72,6 +102,14 @@ public class TreasureHunter
 
             // and the town is "tougher"
             toughness = 0.75;
+        }
+        if(easyMode){
+            markdown=0.05;
+            toughness=0.1;
+        }
+        if(cheatMode){
+            markdown=0;
+            toughness=0;
         }
 
         // note that we don't need to access the Shop object
@@ -102,24 +140,40 @@ public class TreasureHunter
     {
         Scanner scanner = new Scanner(System.in);
         String choice = "";
+        int win=currentTown.getWin();
 
-        while (!(choice.equals("X") || choice.equals("x") || win==0))
+        while (!(choice.equals("X") || choice.equals("x") || win!=0))
         {
             System.out.println();
             System.out.println(currentTown.getLatestNews());
             System.out.println("***");
             System.out.println(hunter);
             System.out.println(currentTown);
-            System.out.println("(B)uy something at the shop.");
-            System.out.println("(S)ell something at the shop.");
-            System.out.println("(M)ove on to a different town.");
-            System.out.println("(L)ook for trouble!");
-            System.out.println("(H)unt for treasure.");
-            System.out.println("Give up the hunt and e(X)it.");
+            System.out.println(" _______________________");
+            System.out.println("> (B)uy                 <");
+            System.out.println("> (S)ell                <");
+            System.out.println("> (M)ove                <");
+            System.out.println("> (L)ook for trouble!   <");
+            System.out.println("> (H)unt for treasure.  <");
+            System.out.println("> E(X)it                <");
+            System.out.println(" ^^^^^^^^^^^^^^^^^^^^^^^");
             System.out.println();
             System.out.print("What's your next move? ");
             choice = scanner.nextLine();
             processChoice(choice);
+
+
+            win=currentTown.getWin();
+            if(currentTown.getWin()==1){
+                System.out.println(currentTown.getLatestNews());
+                System.out.println("You have obtained all the treasures.  You WIN!");
+            }
+            if(currentTown.getWin()==2){
+                System.out.println(currentTown.getLatestNews());
+                System.out.println("You have lost all your money.  You LOSE!");
+            }
+
+
         }
     }
 
@@ -129,11 +183,13 @@ public class TreasureHunter
      */
     private void processChoice(String choice)
     {
-        if (choice.equals("B") || choice.equals("b") || choice.equals("S") || choice.equals("s"))
+
+
+        if (choice.equals("B") || choice.equals("b")||choice.equals("S") || choice.equals("s") )
         {
             currentTown.enterShop(choice);
         }
-        else if (choice.equals("M") || choice.equals("m"))
+        else if (choice.equals("M") ||choice.equals("m") )
         {
             if (currentTown.leaveTown())
             {
@@ -142,15 +198,15 @@ public class TreasureHunter
                 enterTown();
             }
         }
-        else if (choice.equals("L") || choice.equals("l"))
+        else if (choice.equals("L")||choice.equals("l")  )
         {
             currentTown.lookForTrouble();
         }
-        else if(choice.equals("H")||choice.equals("h")){
+        else if(choice.equals("H")||choice.equals("h") ){
             currentTown.lookForTreasure();
 
         }
-        else if (choice.equals("X") || choice.equals("x"))
+        else if (choice.equals("X") ||choice.equals("m") )
         {
             System.out.println("Fare thee well, " + hunter.getHunterName() + "!");
         }

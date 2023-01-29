@@ -13,16 +13,25 @@ public class Shop
     private static final int MACHETE_COST = 6;
     private static final int HORSE_COST = 12;
     private static final int BOAT_COST = 20;
+    private static final int SLED_COST=16;
+    private boolean cheat=false;
 
     // instance variables
     private double markdown;
     private Hunter customer;
+    private boolean easy=false;
 
     //Constructor
     public Shop(double markdown)
     {
         this.markdown = markdown;
         customer = null;
+        if(markdown==0){
+            cheat=true;
+        }
+        if(markdown==.05){
+            easy=true;
+        }
     }
 
     /** method for entering the shop
@@ -34,13 +43,21 @@ public class Shop
         customer = hunter;
 
         Scanner scanner = new Scanner(System.in);
-        if (buyOrSell.equals("B") || buyOrSell.equals("b"))
+        if (buyOrSell.equals("B") ||buyOrSell.equals("b"))
         {
             System.out.println("Welcome to the shop! We have the finest wares in town.");
             System.out.println("Currently we have the following items:");
             System.out.println(inventory());
-            System.out.print("What're you lookin' to buy? ");
-            String item = scanner.nextLine();
+            boolean valid=false;
+            String item="";
+            while(!valid) {
+                System.out.print("What're you lookin' to buy? ");
+                item = scanner.nextLine();
+                if (item.equals("Horse") || item.equals("Water") || item.equals("Machete") || item.equals("Rope") || item.equals("Boat")|| item.equals("Sled")) {
+                    valid = true;
+                }
+            }
+
             int cost = checkMarketPrice(item, true);
             if (cost == 0)
             {
@@ -86,11 +103,33 @@ public class Shop
      */
     public String inventory()
     {
-        String str = "Water: " + WATER_COST + " gold\n";
-        str += "Rope: " + ROPE_COST + " gold\n";
-        str += "Machete: " + MACHETE_COST + " gold\n";
-        str += "Horse: " + HORSE_COST + " gold\n";
-        str += "Boat: " + BOAT_COST + " gold\n";
+        String str="";
+        if(easy){
+            str = "Water: " + (int)(WATER_COST*.5) + " gold\n";
+            str += "Rope: " + (int)(ROPE_COST*.5) + " gold\n";
+            str += "Machete: " + (int)(MACHETE_COST*.5) + " gold\n";
+            str += "Horse: " + (int)(HORSE_COST*.5) + " gold\n";
+            str += "Boat: " + (int)(BOAT_COST*.5) + " gold\n";
+            str += "Sled: " + (int)(SLED_COST*.5) + " gold\n";
+        }
+        else if(cheat){
+            str = "Water: " + 1 + " gold\n";
+            str += "Rope: " + 1 + " gold\n";
+            str += "Machete: " + 1 + " gold\n";
+            str += "Horse: " + 1 + " gold\n";
+            str += "Boat: " + 1 + " gold\n";
+            str+="Sled: "+ 1 +" gold\n";
+        }
+
+        else {
+            str = "Water: " + WATER_COST + " gold\n";
+            str += "Rope: " + ROPE_COST + " gold\n";
+            str += "Machete: " + MACHETE_COST + " gold\n";
+            str += "Horse: " + HORSE_COST + " gold\n";
+            str += "Boat: " + BOAT_COST + " gold\n";
+            str += "Sled: " + SLED_COST + " gold\n";
+        }
+
 
         return str;
     }
@@ -101,6 +140,7 @@ public class Shop
      */
     public void buyItem(String item)
     {
+
         int costOfItem = checkMarketPrice(item, true);
         if (customer.buyItem(item, costOfItem))
         {
@@ -118,6 +158,7 @@ public class Shop
      */
     public void sellItem(String item)
     {
+
         int buyBackPrice = checkMarketPrice(item, false);
         if (customer.sellItem(item, buyBackPrice))
         {
@@ -139,11 +180,20 @@ public class Shop
     {
         if (isBuying)
         {
+            if(cheat){
+                return 1;
+            }
+            if(easy){
+                return (int)(getCostOfItem(item)*.5);
+            }
             return getCostOfItem(item);
+
         }
+
+
         else
         {
-            return getBuyBackCost(item);
+            return getCostOfItem(item);
         }
     }
 
@@ -174,6 +224,9 @@ public class Shop
         else if (item.equals("Boat") || item.equals("boat"))
         {
             return BOAT_COST;
+        }
+        else if(item.equals("Sled")|| item.equals("sled")){
+            return SLED_COST;
         }
         else
         {

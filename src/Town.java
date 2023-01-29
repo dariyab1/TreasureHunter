@@ -13,6 +13,7 @@ public class Town
     private boolean toughTown;
     private Treasure treasure;
     private int win;
+    private boolean cheat=false;
 
 
 
@@ -38,6 +39,13 @@ public class Town
         toughTown = (Math.random() < toughness);
         treasure=new Treasure();
         win=0;
+        if(toughness==0){
+            cheat=true;
+        }
+    }
+
+    public int getWin(){
+        return win;
     }
 
     public String getLatestNews()
@@ -88,6 +96,7 @@ public class Town
         return false;
     }
 
+
     public void enterShop(String choice)
     {
         shop.enter(hunter, choice);
@@ -118,21 +127,31 @@ public class Town
         {
             printMessage = "You want trouble, stranger!  You got it!\nOof! Umph! Ow!\n";
             int goldDiff = (int)(Math.random() * 10) + 1;
+            if(cheat){
+                printMessage += "\nYou won the brawl and receive " +  100 + " gold.";
+                hunter.changeGold(100);
+            }
+            else{
             if (Math.random() > noTroubleChance)
             {
                 printMessage += "Okay, stranger! You proved yer mettle. Here, take my gold.";
                 printMessage += "\nYou won the brawl and receive " +  goldDiff + " gold.";
                 hunter.changeGold(goldDiff);
             }
-            else
-            {
-                printMessage += "That'll teach you to go lookin' fer trouble in MY town! Now pay up!";
-                printMessage += "\nYou lost the brawl and pay " +  goldDiff + " gold.";
-                hunter.changeGold(-1 * goldDiff);
-            }
-            if(hunter.getGold()<=0){
-                win=2;
-            }
+            else {
+                if (hunter.getGold() - goldDiff < 0) {
+                    printMessage += "You ain't got no money?  Then pay with your life.";
+                    printMessage += "\nYou lost the brawl and pay " + goldDiff + " gold.";
+                    win = 2;
+                }
+
+                else {
+                    printMessage += "That'll teach you to go lookin' fer trouble in MY town! Now pay up!";
+                    printMessage += "\nYou lost the brawl and pay " + goldDiff + " gold.";
+                    hunter.changeGold(-1 * goldDiff);
+                }
+            }}
+
 
         }
     }
@@ -169,25 +188,28 @@ public class Town
     private Terrain getNewTerrain()
     {
         double rnd = Math.random();
-        if (rnd < .2)
+        if (rnd < .16)
         {
             return new Terrain("Mountains", "Rope");
         }
-        else if (rnd < .4)
+        else if (rnd < .32)
         {
             return new Terrain("Ocean", "Boat");
         }
-        else if (rnd < .6)
+        else if (rnd < .48)
         {
             return new Terrain("Plains", "Horse");
         }
-        else if (rnd < .8)
+        else if (rnd < .64)
         {
             return new Terrain("Desert", "Water");
         }
-        else
+        else if(rnd<.8)
         {
             return new Terrain("Jungle", "Machete");
+        }
+        else{
+            return new Terrain("Tundra", "Sled");
         }
     }
 
@@ -201,7 +223,5 @@ public class Town
         return (rand < 0.5);
     }
 
-    public int getWin(){
-        return win;
-    }
+
 }

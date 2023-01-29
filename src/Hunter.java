@@ -13,6 +13,7 @@ public class Hunter
     private String kit;
     private String treasureCollection;
     private int gold;
+    private boolean cheat;
 
     //Constructor
     /**
@@ -26,6 +27,9 @@ public class Hunter
         kit = "";
         gold = startingGold;
         treasureCollection="";
+        if(startingGold==50){
+            cheat=true;
+        }
     }
 
     //Accessors
@@ -63,10 +67,14 @@ public class Hunter
      */
     public boolean buyItem(String item, int costOfItem)
     {
+        if(cheat){
+            costOfItem=1;
+        }
         if (costOfItem == 0 || gold < costOfItem || hasItemInKit(item))
         {
             return false;
         }
+
 
         gold -= costOfItem;
         addItem(item);
