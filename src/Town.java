@@ -14,6 +14,8 @@ public class Town
     private Treasure treasure;
     private int win;
     private boolean cheat=false;
+    private boolean easy=false;
+
 
 
 
@@ -41,6 +43,9 @@ public class Town
         win=0;
         if(toughness==0){
             cheat=true;
+        }
+        if(toughness==.1){
+            easy=true;
         }
     }
 
@@ -130,6 +135,27 @@ public class Town
             if(cheat){
                 printMessage += "\nYou won the brawl and receive " +  100 + " gold.";
                 hunter.changeGold(100);
+            }
+            else if(easy){
+                if (Math.random()*1.5 > noTroubleChance)
+                {
+                    printMessage += "Okay, stranger! You proved yer mettle. Here, take my gold.";
+                    printMessage += "\nYou won the brawl and receive " +  goldDiff + " gold.";
+                    hunter.changeGold(goldDiff*2);
+                }
+                else {
+                    if (hunter.getGold() - goldDiff < 0) {
+                        printMessage += "You ain't got no money?  Then pay with your life.";
+                        printMessage += "\nYou lost the brawl and pay " + goldDiff + " gold.";
+                        win = 2;
+                    }
+
+                    else {
+                        printMessage += "That'll teach you to go lookin' fer trouble in MY town! Now pay up!";
+                        printMessage += "\nYou lost the brawl and pay " + goldDiff + " gold.";
+                        hunter.changeGold(-1 * goldDiff);
+                    }
+                }
             }
             else{
             if (Math.random() > noTroubleChance)
